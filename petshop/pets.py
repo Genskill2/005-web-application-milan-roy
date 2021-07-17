@@ -130,8 +130,8 @@ def edit(pid):
             faker=Faker()
             cursor.execute("select bought from pet where id=?",[pid])
             bought=cursor.fetchone()
-            bought=format_date(bought)
             sold_time = bought + datetime.timedelta(days=random.randint(5, 30))
+            sold_time=format_date(sold_time)
             cursor.execute("update pet set sold=? where id =?",[sold_time,pid])
             
         conn.commit()
