@@ -126,7 +126,7 @@ def edit(pid):
         description = request.form.get('description')
         sold = request.form.get("sold")
         cursor.execute("update pet set description=? where id =?",[description,pid])
-        if(sold=='sold'):
+        if(sold=='1'):
                      
             sold_time = datetime.datetime.now().strftime("%Y-%m-%d")
             sold_time=format_date(sold_time)
