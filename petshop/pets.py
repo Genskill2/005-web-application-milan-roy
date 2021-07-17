@@ -3,7 +3,7 @@ import datetime
 from flask import Blueprint
 from flask import render_template, request, redirect, url_for, jsonify
 from flask import g
-
+from faker import Faker
 from . import db
 
 bp = Blueprint("pets", "pets", url_prefix="")
@@ -18,8 +18,12 @@ def format_date(d):
 
 @bp.route("/search/<field>/<value>")
 def search(field, value):
-    # TBD
-    return ""
+    #conn = db.get_db()
+    #cursor = conn.cursor()
+    #cursor.execute(f"select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s tag t tags_pets tp where p.species = s.id AND t.name =? order by p.name",(value))
+    #pets = cursor.fetchall()
+    #print(pets)
+    return ""# render_template('index.html', pets = pets, order="asc")
 
 @bp.route("/")
 def dashboard():
@@ -96,7 +100,13 @@ def edit(pid):
     elif request.method == "POST":
         description = request.form.get('description')
         sold = request.form.get("sold")
-        # TODO Handle sold
+        cursor.execute("update pet set description=? where id =?",[description,pid])
+        if(sold=='sold'):
+            faker=Faker()
+            sold_time = datetime.datetime.strptime(faker.date(), '%Y-%m-%d').date()
+            cursor.execute("update pet set sold=? where id =?",[sold_time,pid])
+            
+        conn.commit()
         return redirect(url_for("pets.pet_info", pid=pid), 302)
         
     
