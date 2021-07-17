@@ -1,5 +1,5 @@
 import datetime
-
+import random
 from flask import Blueprint
 from flask import render_template, request, redirect, url_for, jsonify
 from flask import g
@@ -128,7 +128,9 @@ def edit(pid):
         cursor.execute("update pet set description=? where id =?",[description,pid])
         if(sold=='sold'):
             faker=Faker()
-            sold_time = datetime.datetime.strptime(faker.date(), '%Y-%m-%d').date()
+            cursor.execute("select bought from pet where id=?",[pid])
+            bought=cursor.fetch()
+            sold_time = bought + datetime.timedelta(days=random.randint(5, 30))
             cursor.execute("update pet set sold=? where id =?",[sold_time,pid])
             
         conn.commit()
