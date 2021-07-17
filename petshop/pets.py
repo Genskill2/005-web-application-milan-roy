@@ -18,18 +18,43 @@ def format_date(d):
 
 @bp.route("/search/<field>/<value>")
 def search(field, value):
-    #conn = db.get_db()
-    #cursor = conn.cursor()
-    #cursor.execute(f"select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s tag t tags_pets tp where p.species = s.id AND t.name =? order by p.name",(value))
-    #pets = cursor.fetchall()
-    #print(pets)
-    return ""# render_template('index.html', pets = pets, order="asc")
+    conn = db.get_db()
+    cursor = conn.cursor()
+    oby= request.args.get("order_by", "id")  
+    order = request.args.get("order", "asc")
+    if(oby=='id'):
+        if order == "asc":
+            cursor.execute("select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag t, tags_pets tp where p.species = s.id and p.id=tp.pet and tp.tag=t.id and t.name=? order by p.id",[value])
+        else:
+            cursor.execute("select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag t, tags_pets tp where p.species = s.id and p.id=tp.pet and tp.tag=t.id and t.name=? order by p.id desc",[value])
+    if(oby=='name'):
+        if order == "asc":
+            cursor.execute("select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag t, tags_pets tp where p.species = s.id and p.id=tp.pet and tp.tag=t.id and t.name=? order by p.name",[value])
+        else:
+            cursor.execute("select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag t, tags_pets tp where p.species = s.id and p.id=tp.pet and tp.tag=t.id and t.name=? order by p.name desc",[value])
+    if(oby=='bought'):
+        if order == "asc":
+            cursor.execute("select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag t, tags_pets tp where p.species = s.id and p.id=tp.pet and tp.tag=t.id and t.name=? order by p.bought",[value])
+        else:
+            cursor.execute("select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag t, tags_pets tp where p.species = s.id and p.id=tp.pet and tp.tag=t.id and t.name=? order by p.bought desc",[value])
+    if(oby=='sold'):
+        if order == "asc":
+            cursor.execute("select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag t, tags_pets tp where p.species = s.id and p.id=tp.pet and tp.tag=t.id and t.name=? order by p.sold",[value])
+        else:
+            cursor.execute("select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag t, tags_pets tp where p.species = s.id and p.id=tp.pet and tp.tag=t.id and t.name=? order by p.sold desc",[value])
+    if(oby=='species'):
+        if order == "asc":
+            cursor.execute("select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag t, tags_pets tp where p.species = s.id and p.id=tp.pet and tp.tag=t.id and t.name=? order by p.species",[value])
+        else:
+            cursor.execute("select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag t, tags_pets tp where p.species = s.id and p.id=tp.pet and tp.tag=t.id and t.name=? order by p.species desc",[value]) 
+    pets = cursor.fetchall()
+    return render_template('search.html', field =field,value=value, pets = pets, order="desc" if order=="asc" else "asc")
 
 @bp.route("/")
 def dashboard():
     conn = db.get_db()
     cursor = conn.cursor()
-    oby= request.args.get("order_by", "id") # TODO. This is currently not used. 
+    oby= request.args.get("order_by", "id") 
     order = request.args.get("order", "asc")
     if(oby=='id'):
         if order == "asc":
