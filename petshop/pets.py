@@ -129,7 +129,7 @@ def edit(pid):
         if(sold=='1'):
                      
             sold_time = datetime.datetime.now().strftime("%Y-%m-%d")
-            sold_time=format_date(sold_time)
+            
             cursor.execute("update pet set sold=? where id =?",[sold_time,pid])
             
         conn.commit()
