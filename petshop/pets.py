@@ -1,9 +1,9 @@
 import datetime
-import random
+
 from flask import Blueprint
 from flask import render_template, request, redirect, url_for, jsonify
 from flask import g
-from faker import Faker
+
 from . import db
 
 bp = Blueprint("pets", "pets", url_prefix="")
@@ -127,11 +127,9 @@ def edit(pid):
         sold = request.form.get("sold")
         cursor.execute("update pet set description=? where id =?",[description,pid])
         if(sold=='sold'):
-            faker=Faker()
-            cursor.execute("select bought from pet where id=?",[pid])
-            bought=cursor.fetchone()
-            sold_time = bought + datetime.timedelta(days=random.randint(5, 30))
-            sold_time=format_date(sold_time)
+                     
+            sold_time = datetime.datetime.now().strftime("%Y-%m-%d")
+            #sold_time=format_date(sold_time)
             cursor.execute("update pet set sold=? where id =?",[sold_time,pid])
             
         conn.commit()
